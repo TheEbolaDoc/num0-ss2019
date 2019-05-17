@@ -21,7 +21,7 @@ class Neville:
             else [x_y[1] for x_y in self.grid_points]
             for i in range(len(self.grid_points))
         ]
-        print(self.pik)
+        # print(self.pik)
 
     def compute(self):
         for k in range(len(self.pik)-1):
@@ -39,7 +39,29 @@ class Neville:
                 next = self.pik[k][i+1] + (self.x -
                         self.grid_points[i+1][0])/(self.grid_points[i+1][0] - self.grid_points[i-k][0]) * (self.pik[k][i+1] - self.pik[k][i])
                 self.pik[k+1].append(next)
-            print(self.pik)
+        return self.pik[len(self.pik)-1][0]
+
+    def print_piktable(self):
+        import copy
+        local = copy.deepcopy(self.pik)
+        # fill the matrix
+        local = [l + [None]*(len(self.pik)-len(l)) for l in local]
+        # transpose it
+        local = [[local[j][i] for j in range(len(local))] for i in range(len(local[0]))]
+
+        x = "      "
+        for k in range(len(self.pik)):
+            x += f" | p_i{k} "
+        print(x)
+        print(" " + "-" * len(x))
+        for k in range(len(local)):
+            x = f" i = {k}"
+            for i in range(len(local[k])):
+                if local[k][i] is not None:
+                    x += f" | {local[k][i]:5.3f}"
+                else:
+                    x += " |      "
+            print(x)
 
     def plot(self):
         pass
@@ -54,6 +76,7 @@ def main():
 
     sin_interpol = Neville(px)
     print(sin_interpol.compute())
+    sin_interpol.print_piktable()
 
 def pairwise(iterable):
     """ Creates pairs which follow each other in the list """
