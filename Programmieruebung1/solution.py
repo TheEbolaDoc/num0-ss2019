@@ -1,13 +1,5 @@
-from math import sin, radians, degrees, pi
-from itertools import tee
-
-# class Point():
-#     def __init__(self, x, y):
-#         self.x = x
-#         self.y = y
-
-#     def __str__(self):
-#         return f"({self.x}, {self.y})"
+from math import sin, radians, degrees
+from copy import deepcopy
 
 class Neville:
     def __init__(self, p):
@@ -23,7 +15,7 @@ class Neville:
         ]
         # print(self.pik)
 
-    def compute(self):
+    def compute(self, verbose=False):
         for k in range(len(self.pik)-1):
             for i in range(len(self.pik[k])-1):
 
@@ -33,41 +25,48 @@ class Neville:
                 # print("x", degrees(self.x))
                 # print(f"x_{i}", degrees(self.grid_points[i+1][0]))
                 # print("x_i-k", degrees(self.grid_points[i-k][0]))
-                # print("p_(i-1,k-1)", self.pik[k][i])1
+                # print("p_(i-1,k-1)", self.pik[k][i])
                 # print("----------")
 
-                next = self.pik[k][i+1] + (self.x -
-                        self.grid_points[i+1][0])/(self.grid_points[i+1][0] - self.grid_points[i-k][0]) * (self.pik[k][i+1] - self.pik[k][i])
+                next = self.pik[k][i+1] + (self.x - self.grid_points[i+1][0])/(self.grid_points[i+1][0] - self.grid_points[i-k][0]) * (self.pik[k][i+1] - self.pik[k][i])
+                if verbose:
+                    compute_str  = f"{next:5.4f} = {self.pik[k][i+1]:5.4f} + ({degrees(self.x):3.1f} - "
+                    compute_str += f"{degrees(self.grid_points[i+1][0]):3.1f})/({degrees(self.grid_points[i+1][0]):3.1f} - "
+                    compute_str += f"{degrees(self.grid_points[i-k][0]):4.1f}) * ({self.pik[k][i+1]:5.4f} - {self.pik[k][i]:5.4f})"
+                    print(compute_str)
                 self.pik[k+1].append(next)
+            print("---------")
         return self.pik[len(self.pik)-1][0]
 
-    def print_piktable(self):
-        import copy
-        local = copy.deepcopy(self.pik)
-        # fill the matrix
+    def piktable(self):
+        local = deepcopy(self.pik)
+
+        # fill the blank spots to get a nxn matrix
         local = [l + [None]*(len(self.pik)-len(l)) for l in local]
         # transpose it
         local = [[local[j][i] for j in range(len(local))] for i in range(len(local[0]))]
 
-        x = "      "
+        output = " " * 6
         for k in range(len(self.pik)):
-            x += f" | p_i{k} "
-        print(x)
-        print(" " + "-" * len(x))
+            output += f" | p_i{k} "
+        output += "\n"
+        output += " " + "-" * len(output) + "\n"
         for k in range(len(local)):
-            x = f" i = {k}"
+            output += f" i = {k}"
             for i in range(len(local[k])):
                 if local[k][i] is not None:
-                    x += f" | {local[k][i]:5.3f}"
+                    output += f" | {local[k][i]:5.3f}"
                 else:
-                    x += " |      "
-            print(x)
+                    output += " |" + " " * 6
+            output += "\n"
+        return output
 
     def plot(self):
         pass
 
 def main():
-    x_n = [0, 30, 60, 90]
+    # x_n = [0, 30, 60, 90]
+    x_n = [0, 30, 60]
     # transform the values from degree to radian
     x_n = [radians(x) for x in x_n]
 
@@ -75,15 +74,8 @@ def main():
     px = [radians(45), sin, x_n]
 
     sin_interpol = Neville(px)
-    print(sin_interpol.compute())
-    sin_interpol.print_piktable()
-
-def pairwise(iterable):
-    """ Creates pairs which follow each other in the list """
-    first, second = tee(iterable)
-    next(second, None)
-    return zip(fist, second)
-
+    print(sin_interpol.compute(verbose=True), "\n")
+    print(sin_interpol.piktable())
 
 if __name__ == "__main__":
     main()
