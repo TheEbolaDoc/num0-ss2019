@@ -1,5 +1,4 @@
 from math import sin, radians, degrees
-from copy import deepcopy
 
 class Neville:
     def __init__(self, p):
@@ -9,42 +8,28 @@ class Neville:
         # for each x calculate the corresponding y and eliminate duplicates
         self.grid_points = [(x, self.func(x)) for x in p[2]]
         self.pik = [
-            list() if i != 0
+            [None for _ in range(i)] if i != 0
             else [x_y[1] for x_y in self.grid_points]
             for i in range(len(self.grid_points))
         ]
-        # print(self.pik)
 
     def compute(self, verbose=False):
         for k in range(len(self.pik)-1):
-            for i in range(len(self.pik[k])-1):
-
-                # print("k", k)
-                # print("i", i)
-                # print("p_(i,k-1)", self.pik[k][i+1])
-                # print("x", degrees(self.x))
-                # print(f"x_{i}", degrees(self.grid_points[i+1][0]))
-                # print("x_i-k", degrees(self.grid_points[i-k][0]))
-                # print("p_(i-1,k-1)", self.pik[k][i])
-                # print("----------")
-
+            for i in range(k, len(self.pik[k])-1):
                 next = self.pik[k][i+1] + (self.x - self.grid_points[i+1][0])/(self.grid_points[i+1][0] - self.grid_points[i-k][0]) * (self.pik[k][i+1] - self.pik[k][i])
                 if verbose:
                     compute_str  = f"{next:5.4f} = {self.pik[k][i+1]:5.4f} + ({degrees(self.x):3.1f} - "
                     compute_str += f"{degrees(self.grid_points[i+1][0]):3.1f})/({degrees(self.grid_points[i+1][0]):3.1f} - "
-                    compute_str += f"{degrees(self.grid_points[i-k][0]):4.1f}) * ({self.pik[k][i+1]:5.4f} - {self.pik[k][i]:5.4f})"
+                    compute_str += f"{degrees(self.grid_points[i-k][0]):4.1f}) * ({self.pik[k][i+1]:5.4f} - {self.pik[k][i]:5.4f}) | i={i}, k={k}"
                     print(compute_str)
                 self.pik[k+1].append(next)
-            print("---------")
-        return self.pik[len(self.pik)-1][0]
+            if verbose:
+                print("---------")
+        return self.pik[len(self.pik)-1][len(self.pik[len(self.pik)-1])-1]
 
     def piktable(self):
-        local = deepcopy(self.pik)
-
-        # fill the blank spots to get a nxn matrix
-        local = [l + [None]*(len(self.pik)-len(l)) for l in local]
         # transpose it
-        local = [[local[j][i] for j in range(len(local))] for i in range(len(local[0]))]
+        local = [[self.pik[j][i] for j in range(len(self.pik))] for i in range(len(self.pik[0]))]
 
         output = " " * 6
         for k in range(len(self.pik)):
