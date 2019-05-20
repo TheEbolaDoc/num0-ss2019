@@ -38,9 +38,10 @@ class Neville:
 
     def piktable(self):
         """ this function only creates the table as we created """
+        local = [l + [None]*(len(self.pik)-len(l)) for l in self.pik]
         # transpose it
-        local = [[self.pik[j][i] for j in range(len(self.pik))]
-                 for i in range(len(self.pik[0]))]
+        local = [[local[j][i] for j in range(len(local))]
+                 for i in range(len(local[0]))]
 
         output = " " * 6
         for k in range(len(self.pik)):
@@ -70,6 +71,7 @@ def main():
     px = [radians(45), sin, x_n]
 
     sin_interpol = Neville(px)
+    print(sin_interpol.piktable())
     print("Result: ", sin_interpol.compute(verbose=True), "\n")
     print(sin_interpol.piktable())
 
