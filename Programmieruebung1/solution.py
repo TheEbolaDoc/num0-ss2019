@@ -71,16 +71,17 @@ def main():
     px = [radians(45), sin, x_n]
 
     sin_interpol = Neville(px)
+    print(sin_interpol.pik)
     print(sin_interpol.piktable())
-    print("Result: ", sin_interpol.compute(verbose=True), "\n")
-    print(sin_interpol.piktable())
+    # print("Result: ", sin_interpol.compute(verbose=True), "\n")
+    # print(sin_interpol.piktable())
 
     # create a scaled version of the sin() function
     scaled_sin = lambda n: lambda x: sin(n*x)
-    # for i in [2, 4, 8]:
-    #     px = [radians(45), scaled_sin(i), x_n]
-    #     sin_interpol_b = Neville(px)
-    #     print(sin_interpol_b.compute())
+    for i in [2, 4, 8]:
+        px = [radians(45), scaled_sin(i), x_n]
+        sin_interpol_b = Neville(px)
+        print(sin_interpol_b.compute())
 
 if __name__ == "__main__":
     main()
