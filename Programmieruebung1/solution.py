@@ -97,6 +97,7 @@ class Neville:
 
         # Plot  anzeigen
         plt.show()
+        # plt.savefig(self.func_name+".png", dpi=300)
 
 
 def main():
@@ -112,7 +113,7 @@ def main():
     # print(sin_interpol.piktable())
     print("Result: ", sin_interpol.compute(), "\n")
     print(sin_interpol.piktable())
-    sin_interpol.plot()
+    # sin_interpol.plot()
 
     # create a scaled version of the sin() function
     scaled_sin = lambda n: lambda x: np.sin(n*x)
@@ -121,7 +122,7 @@ def main():
         sin_interpol_b = Neville(px)
         sin_interpol_b.func_name = f"sin({i}*x)"
         print(sin_interpol_b.compute())
-        sin_interpol_b.plot()
+        # sin_interpol_b.plot()
 
 
 if __name__ == "__main__":
