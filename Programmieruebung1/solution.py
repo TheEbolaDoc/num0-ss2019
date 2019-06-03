@@ -68,6 +68,9 @@ class Neville:
             output += "\n"
         return output
 
+    def __str__(self):
+        return self.piktable()
+
     def plot(self):
         startx, endx = 0.00001, pi/2
         x = np.linspace(startx, endx, 100)
@@ -96,8 +99,8 @@ class Neville:
         plt.grid()
 
         # Plot  anzeigen
-        plt.show()
-        # plt.savefig(self.func_name+".png", dpi=300)
+        # plt.show()
+        plt.savefig(self.func_name+".png", dpi=300)
 
 
 def main():
@@ -109,10 +112,9 @@ def main():
     px = [radians(45), np.sin, x_n]
 
     sin_interpol = Neville(px)
-    print(sin_interpol.pik)
-    # print(sin_interpol.piktable())
+    # print(sin_interpol)
     print("Result: ", sin_interpol.compute(), "\n")
-    print(sin_interpol.piktable())
+    print(sin_interpol)
     # sin_interpol.plot()
 
     # create a scaled version of the sin() function
@@ -120,7 +122,7 @@ def main():
     for i in [2, 4, 8]:
         px = [radians(45), scaled_sin(i), x_n]
         sin_interpol_b = Neville(px)
-        sin_interpol_b.func_name = f"sin({i}*x)"
+        sin_interpol_b.func_name = f"sin({i}x)"
         print(sin_interpol_b.compute())
         # sin_interpol_b.plot()
 
