@@ -87,7 +87,7 @@ class Neville:
         plt.plot(x, y1, label=f'{self.func_name}')
         plt.plot(x, y2, label='interpoliert')
         plt.plot(x, y3, 'r--', label=f'{self.func_name}-interpoliert')
-        plt.plot(x, y3, label=r'$\omega_3$')
+        plt.plot(x, y4, label=r'$\omega_3$')
 
         #  Labels  fuer x- und y-Achse
         plt.xlabel('x-Achse')
