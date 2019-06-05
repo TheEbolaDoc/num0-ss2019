@@ -123,7 +123,7 @@ def main():
         px = [radians(45), scaled_sin(i), x_n]
         sin_interpol_b = Neville(px)
         sin_interpol_b.func_name = f"sin({i}x)"
-        print(sin_interpol_b.compute())
+        print(sin_interpol_b.func_name + ":", sin_interpol_b.compute())
         # sin_interpol_b.plot()
 
 
