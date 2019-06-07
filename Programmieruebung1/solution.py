@@ -10,44 +10,38 @@ class Neville:
         self.func = p[1]
         self.func_name = "sin(x)"
         # for each x calculate the corresponding y and eliminate duplicates
-        self.grid_points = [(x, self.func(x)) for x in p[2]]
+        self.x_n = p[2]
+        self.y_n = [self.func(x) for x in self.x_n]
         self._construct_piktable()
 
     def _construct_piktable(self):
         self.pik = [
-            [None for _ in range(i)]
-            if i != 0 else [x_y[1] for x_y in self.grid_points]
-            for i in range(len(self.grid_points))
+            [None] * len(self.x_n) if i != 0
+            else [y for y in self.y_n]
+            for i in range(len(self.x_n))
         ]
 
     def compute(self, x="",verbose=False):
         if not x:
             x = self.x
         self._construct_piktable()
-
         if verbose:
-            max_len = 0
-        for k in range(len(self.pik) - 1):
-            for i in range(k, len(self.pik[k]) - 1):
-                next_pik = self.pik[k][
-                    i+1] + (x - self.grid_points[i+1][0]) / (
-                        self.grid_points[i+1][0] - self.grid_points[i-k][0]
-                    ) * (self.pik[k][i+1] - self.pik[k][i])
+            self._max_len = 0
+        for k in range(1, len(self.pik)):
+            for i in range(k, len(self.pik[k])):
+                right = (x - self.x_n[i]) / (self.x_n[i] - self.x_n[i-k])
+                right *= (self.pik[k-1][i] - self.pik[k-1][i-1])
+                self.pik[k][i] = self.pik[k-1][i]
+                self.pik[k][i] += right
                 if verbose:
-                    compute_str = f"{next_pik:5.4f} = {self.pik[k][i+1]:5.4f} + "
-                    compute_str += f"({degrees(x):3.1f} - {degrees(self.grid_points[i+1][0]):3.1f})"
-                    compute_str += f"/({degrees(self.grid_points[i+1][0]):3.1f} - {degrees(self.grid_points[i-k][0]):4.1f})"
-                    compute_str += f" * ({self.pik[k][i+1]:5.4f} - {self.pik[k][i]:5.4f})"
-                    compute_str += f" | i={i}, k={k}"
-                    max_len = max(max_len, len(compute_str))
-                    print(compute_str)
-                self.pik[k + 1].append(next_pik)
+                    print(self._compute_str(k, i))
         if verbose:
-            print("-" * max_len)
-        return self.pik[len(self.pik)-1][len(self.pik[len(self.pik)-1]) - 1]
+            print("-" * self._max_len)
+        # return the lower right element
+        return self.pik[-1][-1]
 
     def piktable(self):
-        """ this function only creates the table as we created """
+        """ this function only creates beautiful output"""
         local = [l + [None]*(len(self.pik)-len(l)) for l in self.pik]
         # transpose it
         local = [[local[j][i] for j in range(len(local))]
@@ -70,6 +64,15 @@ class Neville:
 
     def __str__(self):
         return self.piktable()
+
+    def _compute_str(self, k, i):
+        compute_str = f"{self.pik[k][i]:5.4f} = {self.pik[k-1][i]:5.4f} + "
+        compute_str += f"({degrees(self.x):3.1f} - {degrees(self.x_n[i]):3.1f})"
+        compute_str += f"/({degrees(self.x_n[i]):3.1f} - {degrees(self.x_n[i-k]):4.1f})"
+        compute_str += f" * ({self.pik[k-1][i]:5.4f} - {self.pik[k-1][i-1]:5.4f})"
+        compute_str += f" | i={i}, k={k}"
+        self._max_len = max(self._max_len, len(compute_str))
+        return compute_str
 
     def plot(self):
         startx, endx = 0.00001, pi/2
@@ -99,8 +102,8 @@ class Neville:
         plt.grid()
 
         # Plot  anzeigen
-        # plt.show()
-        plt.savefig(self.func_name+".png", dpi=300)
+        plt.show()
+        # plt.savefig(self.func_name+".png", dpi=300)
 
 
 def main():
@@ -112,8 +115,8 @@ def main():
     px = [radians(45), np.sin, x_n]
 
     sin_interpol = Neville(px)
-    # print(sin_interpol)
-    print("Result: ", sin_interpol.compute(), "\n")
+    print(sin_interpol)
+    print("Result: ", sin_interpol.compute(verbose=True), "\n")
     print(sin_interpol)
     # sin_interpol.plot()
 
